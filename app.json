@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "newArchEnabled": true,
+    "scheme": "acme",
+    "plugins": ["expo-router"],
+    "name": "todos",
+    "slug": "todos"
+  }
+}
