@@ -38,7 +38,7 @@ const TodosList = ({ data }) => {
               : { backgroundColor: "#fff" },
           ]}
         >
-          <Text style={styles.newsStyle}>Todo: {item.todo}</Text>
+          <Text style={styles.newsStyle}>{item.todo}</Text>
         </View>
 
         <View>
