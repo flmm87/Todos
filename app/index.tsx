@@ -6,14 +6,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const index = () => {
   return (
     <View style={styles.mainContainer}>
+      <Text style={styles.text}>Welcome in your Todo App</Text>
       <Link href="todoHome">
-        <View>
-          <Text style={styles.text}>Welcome in your Todo App</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.plusIcon]}>
-              <Icon name="arrow-right" style={{ fontSize: 20 }} />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={[styles.plusIcon]}>
+            <Icon name="arrow-right" style={{ fontSize: 20 }} />
+          </TouchableOpacity>
         </View>
       </Link>
     </View>
