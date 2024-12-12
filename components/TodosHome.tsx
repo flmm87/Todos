@@ -33,24 +33,20 @@ const TodoHome = (): JSX.Element => {
   return (
     <>
       <SafeAreaView />
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={styles.container}>
         {todoObject.length > 0 ? (
-          <View>
-            <TodosList data={todoObject} />
-          </View>
+          <TodosList data={todoObject} />
         ) : (
           <View style={styles.mainContainer}>
             <Text style={styles.text}>Please add your first Todo</Text>
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                style={{ padding: 10 }}
-                onPress={() => router.navigate("modalForm")}
-              >
-                <Icon name="plus" />
-              </TouchableOpacity>
-            </View>
           </View>
         )}
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => router.navigate("modalForm")}
+        >
+          <Icon name="plus" size={24} color="black" />
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -59,20 +55,27 @@ const TodoHome = (): JSX.Element => {
 export default TodoHome;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   mainContainer: {
     flex: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     alignItems: "center",
-  },
-
-  iconContainer: {
-    borderWidth: 2,
-    borderColor: "black",
-    borderRadius: 20,
-    flexDirection: "column",
   },
   text: {
     fontSize: 20,
     fontWeight: "400",
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+    width: 50,
+    height: 50,
+    backgroundColor: "white",
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
