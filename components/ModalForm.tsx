@@ -1,16 +1,23 @@
 import { View, Text, StyleSheet, TextInput, Button } from "react-native";
 import React, { useState } from "react";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTodoContext } from "../store/todoContext";
 
 const ModalForm = () => {
+  const { id } = useLocalSearchParams();
   const router = useRouter();
   const [inputValue, setInputValue] = useState<string>();
-  const { addTodo } = useTodoContext();
+  const { addTodo, editTodo } = useTodoContext();
 
   const handleSubmitInput = () => {
     if (inputValue) {
-      addTodo(inputValue);
+      if (id) {
+        // If editing
+        editTodo(+id, inputValue);
+      } else {
+        // If adding
+        addTodo(inputValue);
+      }
       setInputValue("");
       router.back();
     }

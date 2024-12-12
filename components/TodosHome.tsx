@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 
-const TodoHome = () => {
+const TodoHome = (): JSX.Element => {
   const { todoObject, setTodoObject } = useTodoContext();
   const router = useRouter();
 

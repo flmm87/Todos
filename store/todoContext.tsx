@@ -7,13 +7,15 @@ import React, {
 } from "react";
 import { todoFormat } from "../components/TodosList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 interface TodoContextType {
   todoObject: todoFormat[];
-  addTodo: (todo: string) => void;
+  addTodo: (todo: string, id?: number) => void;
   deleteTodo: (id: number) => void;
   confirmTodo: (id: number) => void;
   setTodoObject: (todos: todoFormat[]) => void;
+  editTodo: (id: number, newTodo: string) => void;
 }
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
@@ -23,9 +25,14 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     async function saveToLocalStorage() {
-      // only save in there's is todo
-      if (todoObject.length > 0)
-        await AsyncStorage.setItem("todo", JSON.stringify(todoObject));
+      try {
+        // only save in there's is todo
+        if (todoObject.length > 0)
+          await AsyncStorage.setItem("todo", JSON.stringify(todoObject));
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Error", error);
+      }
     }
     saveToLocalStorage();
   }, [todoObject]);
@@ -39,6 +46,14 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         complete: false,
       },
     ]);
+  };
+
+  const editTodo = (id: number, newTodo: string): void => {
+    setTodoObject((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.id === id ? { ...todo, todo: newTodo } : todo
+      )
+    );
   };
 
   const deleteTodo = async (id: number): Promise<void> => {
@@ -62,6 +77,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
         deleteTodo,
         confirmTodo,
         setTodoObject,
+        editTodo,
       }}
     >
       {children}

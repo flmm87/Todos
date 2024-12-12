@@ -4,7 +4,6 @@ import { Button, StatusBar } from "react-native";
 import { TodoProvider } from "../store/todoContext";
 
 const StackLayout = () => {
-  const router = useRouter();
   return (
     <TodoProvider>
       <StatusBar backgroundColor="dark" />

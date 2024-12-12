@@ -5,8 +5,9 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
+  TextInput,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Checkbox from "expo-checkbox";
 import { useTodoContext } from "../store/todoContext";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -18,9 +19,26 @@ export interface todoFormat {
   complete: boolean;
 }
 
-const TodosList = ({ data }) => {
+const TodosList = ({ data }): JSX.Element => {
   const { confirmTodo, deleteTodo } = useTodoContext();
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filter, setFilter] = useState<string>("all");
+
+  // Search and Filter Todos
+
+  const filteredData = data.filter((todo: todoFormat) => {
+    const matchedData = todo.todo
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const filterData =
+      filter === "all" ||
+      (filter === "complete" && todo.complete) ||
+      (filter === "incomplete" && !todo.complete);
+
+    return filterData && matchedData;
+  });
 
   function toggleComplete(id: number) {
     confirmTodo(id);
@@ -41,7 +59,7 @@ const TodosList = ({ data }) => {
           <Text style={styles.newsStyle}>{item.todo}</Text>
         </View>
 
-        <View>
+        <View style={{ flex: 1 }}>
           <View style={styles.checkBtnConteiner}>
             <Checkbox
               value={item.complete}
@@ -52,6 +70,16 @@ const TodosList = ({ data }) => {
             <TouchableOpacity onPress={() => deleteTodo(item.id)}>
               <Icon name="trash" style={styles.trashIcon} />
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                router.push({
+                  pathname: "/modalForm",
+                  params: { id: item.id, todo: item.todo },
+                });
+              }}
+            >
+              <Icon name="pencil" style={styles.trashIcon} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -60,21 +88,54 @@ const TodosList = ({ data }) => {
   return (
     <>
       <SafeAreaView />
+      <View style={{ paddingHorizontal: 10, paddingTop: 80 }}>
+        {/* Search Input */}
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search todos..."
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+
+        {/* Filter Buttons */}
+        <View style={styles.filterContainer}>
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              filter === "all" && styles.activeFilter,
+            ]}
+            onPress={() => setFilter("all")}
+          >
+            <Text>All</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              filter === "complete" && styles.activeFilter,
+            ]}
+            onPress={() => setFilter("complete")}
+          >
+            <Text>Complete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.filterButton,
+              filter === "incomplete" && styles.activeFilter,
+            ]}
+            onPress={() => setFilter("incomplete")}
+          >
+            <Text>Incomplete</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View>
         <FlatList
-          data={data}
+          data={filteredData}
           keyExtractor={(item) => String(item.id)}
           renderItem={renderList}
           style={styles.styleFlatList}
         />
-        <View style={{ flex: 1, alignItems: "center", paddingVertical: 15 }}>
-          <TouchableOpacity
-            style={styles.plusBtn}
-            onPress={() => router.navigate("modalForm")}
-          >
-            <Icon name="plus" />
-          </TouchableOpacity>
-        </View>
       </View>
     </>
   );
@@ -100,14 +161,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 8,
     backgroundColor: "#fff",
-    width: "80%",
+    width: "79%",
   },
   rootContainer: {
     flex: 1,
     paddingVertical: 8,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
+    width: "92%",
   },
   shadowContainer: {
     shadowColor: "#000",
@@ -121,15 +183,16 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 14,
+    justifyContent: "space-around",
+    gap: 12,
+    padding: 10,
   },
 
   trashIcon: {
-    fontSize: 25,
+    fontSize: 20,
   },
   checkbox: {
-    borderRadius: 10,
+    borderRadius: 30,
   },
 
   plusBtn: {
@@ -138,5 +201,26 @@ const styles = StyleSheet.create({
     borderColor: "black",
     borderRadius: 20,
     flexDirection: "column",
+  },
+  searchInput: {
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+  },
+  filterButton: {
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "black",
+  },
+  activeFilter: {
+    backgroundColor: "lightgray",
   },
 });
