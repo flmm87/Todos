@@ -41,7 +41,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     setTodoObject((prevTodos) => [
       ...prevTodos,
       {
-        id: prevTodos.todo.lenght,
+        id: Math.random(),
         todo,
         complete: false,
       },
