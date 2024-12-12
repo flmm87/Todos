@@ -41,7 +41,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
     setTodoObject((prevTodos) => [
       ...prevTodos,
       {
-        id: prevTodos.length + 1,
+        id: prevTodos.todo.lenght,
         todo,
         complete: false,
       },
